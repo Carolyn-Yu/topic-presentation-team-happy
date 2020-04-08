@@ -21,7 +21,7 @@ output:
 ### 1.传染病模型介绍
 
 
-### 2.宋学坤基础模型
+### 2.传染病动力学SIR模型
 
 
 ### 3.细化政府干预
@@ -33,7 +33,12 @@ output:
 ### 5.配置文件如何使用
 
 ---
+class: inverse, middle, center
 
+## 1. 传染病模型介绍
+
+### 丁晨东
+---
 ## **背景介绍**
 
   这次疫情，是新中国成立以来在我国发生的传播速度最快、感染范围最广、防控难度最大的一次重大突发公共卫生事件。
@@ -124,12 +129,76 @@ output:
   疾病最终的未影响人数S∞和影响人数R∞可通过数值模拟得到.
 
 ---
-## 2宋学坤基础模型
+class: inverse, middle, center
 
-PPT第五页   动力学机理
+## 2. 传染病动力学SIR模型
+
+### 屈亚然
+
+---
+
+### SIR模型  
+
+&emsp;&emsp;由于大多数传染病人治愈后均有很强的免疫力，病愈后的人即非健康人（易感染者 Susceptible）又非病人（已感染者 Infective），被移除感染系统，称之为移出者，该模型的假设条件为：  
+
+&emsp;&emsp;1） 总人数*N*不变，健康者、病人和移出者的比例分别为*s(t)、i(t)、r(t)*。  
+
+&emsp;&emsp;2） 病人的日接触率为 $\lambda$，日治愈率为 $\mu$，传染期接触数为 $\sigma=\lambda/\mu$。  
+
+
+
+<div align=center>![](C:/Users/jx/Desktop/1.png)
+
+---
+
 
   
+  
+建模： $s(t)+i(t)+r(t)=1 \tag{1}$  
 
+建立 $s(t),i(t),r(t)$的两个方程
+
+$$N[i(t+\Delta t)-i(t)]=\lambda N s(t) i(t) \Delta t-\mu N i(t) \Delta t \tag{2}$$  
+$$N[s(t+\Delta t)-s(t)]=-\lambda N s(t) i(t) \Delta t \tag{3}$$
+可得到下面模型:  
+<center>\begin{cases}\frac{ds}{dt}=-\lambda si\\\frac{di}{dt}=\lambda si-\mu i\\\frac{dr}{dt}=\mu i \tag{4}\end{cases} $$ \Downarrow$$无法求出 $i(t),s(t)$的解析解</center>  
+
+&emsp;&emsp;我们通过对模型分析和解的渐进性态研究来初步显示动力学模型对认识传染病流行规律所起的作用。前两个方程不含 $r$ ，故只需先讨论前两个方程。  
+---
+
+
+&emsp;&emsp;由方程(4)消去 $dt$，有$$\frac{di}{ds}=\frac{1}{\sigma s}-1 \tag{5}$$
+&emsp;&emsp;考虑初始值 $s(0)=s_0,i(0)=i_0$，所以方程(5)的解为：$$i=s_0+i_0-s+\frac{1}{\sigma}ln\frac{s}{s_0} \tag{6}$$ 
+
+&emsp;&emsp;方程(6)所示曲线为相轨线，图1中箭头表示了 $s(t)$ 和 $i(t)$ 随时间 $t$的增加的变化趋向。   
+
+<div align=center>![Caption](C:/Users/jx/Desktop/2.png)
+---
+
+
+
+&emsp;&emsp;1) 不论初始条件 $s_0、i_0$ 如何，病人终将消失，即 $i_\infty=0$。  
+
+&emsp;&emsp;首先 $\frac{ds}{dt}\le0，s(t)$单调递减且有下界（为0），故极限 $$\lim\limits_{t\rightarrow\infty}s(t)=s_\infty$$
+&emsp;&emsp;存在； $\frac{dr}{dt}\ge0,r(t)\le1$，同时 $r_\infty$存在；因而 $i_\infty$必定存在。  
+
+&emsp;&emsp;其次若 $i_\infty=n>0，r_\infty=\infty与r_\infty$存在矛盾，故 $i_\infty=0$。从图形上看，不论相轨线从 $P_1$ 或 $P_2$ 出发，它都与 $S$ 轴相交。
+
+&emsp;&emsp;2) 当最终未被感染的健康者的比例是 $s_\infty$时，由相轨线知病人人数 $i_\infty=0$, $$s_0+i_0-s_\infty+\frac{1}{\sigma}ln\frac{s_\infty}{s_0}=0 \tag{7}$$  
+&emsp;&emsp; $s_\infty$是方程(7)在 $(0,\frac{1}{\sigma})$内的单根，是相轨线与 $s$轴在 $(0,\frac{1}{\sigma})$内交点的横坐标，也是方程(4)奇点。  
+
+&emsp;&emsp;3）若 $s_0>\frac{1}{\sigma},i(t)$增加，当 $s=\frac{1}{\sigma}$时 $i(t)$最大为 $s_0+i_0-\frac{1}{\sigma}(1+ln\sigma s_0)$，然后 $i(t)$减少至零， $s(t)$则减少至 $s_\infty$，如图由 $P_1(s_0,i_0)$ 出发的轨迹线。若 $s_0\le\frac{1}{\sigma},i(t)$ 单调减小至零， $s(t)$ 则单调减小至 $s_\infty$，如图由 $P_2(s_0,i_0)$ 出发的轨线。
+---
+   
+     
+      
+&emsp;&emsp;由上面讨论可知 $\frac{1}{\sigma}$ 是阈值，一个非常关键的量。可以根据该阈值得到两种控制传染病的蔓延方法。  
+  
+&emsp;&emsp;其一是当 $s_0>\frac{1}{\sigma}$ 时传染病蔓延，我们要提高 $\frac{1}{\sigma}$ 的值使 $s_0\le\frac{1}{\sigma}$ ,传染病就不会蔓延，方法是提高卫生水平和医疗水平。  
+ 
+&emsp;&emsp;其二是当 $s_0>\frac{1}{\sigma}$ 时，在人们的卫生水平和医疗水平不变的条件下，降低初始人群中健康者的比例 $s_0$ 使得 $s_0\le\frac{1}{\sigma}$ ,传染病也不会蔓延。方法是要提高传染病的治愈人数和免疫人数，提高免疫力和传染病的治愈率。  
+
+---
 
 ## 3细化政府干预
 
@@ -144,7 +213,7 @@ PPT24页
 ---
 class: inverse, middle, center
 
-## 5 R Markdown 文件格式
+## 5. R Markdown 文件格式
 
 ### 武碧璇
 
