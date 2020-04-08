@@ -1,9 +1,17 @@
 ---
-title: 宋学坤SIR软件包使用及政府干预疫情研究
-author: 武碧璇 张妍 祁凡 屈亚然 丁晨东
-date: 2020-03-27
+title: "细化政府干预的北京疫情预测"
+subtitle: "基于SIR模型"
+author: "武碧璇 张妍 祁凡 屈亚然 丁晨东"
+date: "2020年04月05日"
+output:
+  xaringan::moon_reader:
+    css: [default, zh-CN.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
 ---
-
 
 
 
@@ -29,20 +37,133 @@ PPT第五页   动力学机理
 
 PPT24页
 
-## 5配置文件如何使用
 
+---
+class: inverse, middle, center
 
+## 5 R Markdown 文件格式
 
+### 武碧璇
 
+---
+class:middle, center
+## 5.1YAML元数据格式
+---
+###适用中文的LaTex设置
 
-
-
-
-```{r conv2, echo=TRUE, eval=FALSE}
-rmarkdown::render("slides.Rmd", output_file="handout.html", 
-  output_format="html_document", encoding="UTF-8")
-#生成HTML格式
+```yaml
+---
+title: "ABC"
+author: "张三"
+date: "2020年12月12日"
+output:pdf_document
+  latex_engine:xelatex
+  citation_package:natbib
+  toc:true
+  number_section:true
+fontsize:"12pt"
+papersize:"a5"
+geometry:"margin=1in"
+abstract: |
+  摘要内容
+---
 ```
+### 项目设置
+&emsp;&emsp;项目中有多个`.Rmd`格式文件时，可在项目目录中增加`_output.yaml`文件，用于存放共同设置。文件中，直接编写设置即可；无须以`output:`命令引导。
+---
+
+### PDF图形
+&emsp;&emsp;PDF中的中文编码不能自动识别；为使生成PDF图形时，中文能够正确显示，需在文件中添加以下代码。
+
+```{r setup-pdf,include=FALSE}
+pdf.options(family="GBI")
+```
+```{r,echo=FALSE}
+knitr::include_graphics("wbx1.png")
+```
+
+### 模版使用
+
+1.File -> New File -> R Markdown -> From Template 选择所需模版类型即可.
+
+
+2.在`output:`命令中写入:`documentclass:article`
+
+&emsp;&emsp;其中`article`为论文格式，
+
+&emsp;&emsp;`book`为图书格式；
+
+&emsp;&emsp;`ctexart`和`ctexbook`为中文格式，兼容性有限。
+
+---
+class:middle, center
+
+## 5.2R代码段设置
+
+---
+### 运行及输出结果对比
+
+|代     码    |  是否运行   |   是否显示结果  |是否显示代码|
+|:--------------------:|:-------:|:-------:|:-------:|
+|`echo = FALSE`| 是  | 是  |  否 |
+|`eval =FALSE`| 否  |  否  |  是 |
+|`include = FALSE`| 是   | 否   | 否  |
+|`results = 'hide'`|  是 | 否  |  是 | 
+
+### 代码及结果显示格式
+
+默认代码直接显示；默认结果由`##`引导显示。
+
+`prompt = TRUE`命令可在代码前添加`>`
+
+`comment = ''`命令可更改结果前`##`符号，更改为引号内内容。
+
+---
+class:middle, center
+
+## 5.3数学公式
+
+---
+### 希腊字母及符号
+|  命令   |  显示 |命令  | 显示 |  
+|:-----------------:|:-----------:|:------------------:|:------------:|
+| `\alpha` | $\alpha$ |`\beta`  | $\beta$  |
+| `\Sigma`|  $\Sigma$  | `\partial` | $\partial$ |
+| `\pi` | $\pi$ | `\infty` | $\infty$ |
+| `\times` | $\times$ | `\%` | $\%$ |
+| `\Phi` |  $\Phi$   |  `\phi`| $\phi$ |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
