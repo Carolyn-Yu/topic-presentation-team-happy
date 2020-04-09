@@ -287,6 +287,146 @@ class:middle, center
 
 在每一个跳跃点上，都会有相应比例的易感者进入Quarantine(隔离区)，比如当 $\phi_0=(0.1,0.4,0.3)$ 时，在三个时间点Quarantine(隔离区)都会进一步扩大, $0.1 \theta_{t1}^S$ 表示在t1时刻扩大的比例， $0.4 \theta_{t2}^S$ 表示t2时刻的， $0.3 \theta_{t3}^S$ 表示t3时刻的。
 ---
+
+class: inverse, middle, center
+
+## 4.总结及eSIR的简单应用
+
+### 张妍
+
+---
+class:middle, center
+## 4.1 总结
+---
+
+###宋学坤教授团队报告主要总结为几下几方面：
+  
+  
+**·**传染病的基本模型SIR        
+
+**·**修正疾病传播率的SIR模型：考虑到不同时期武汉政府采取的隔离政策       
+
+**·**划分隔离区(quarantine)的SIR模型         
+
+**·**实现:马尔科夫链蒙特卡罗算法(MCMC)    
+
+**·**R软件包：eSIR       
+
+**·**湖北省内外COVID-19数据分析 
+---
+
+### MCMC:
+
+MCMC方法是使用马尔科夫链的蒙特卡洛积分，其基木思想是：构造一条Markov链，使其平稳分布为待估参数的后验分布，通过这条马尔科夫链产生后验分布的样本,并基于马尔科夫链达到平稳分布时的样本(有效样本)进行蒙特卡洛积分。
+设 $\varnothing$ 为某一空间，n为产生的总样本数，m为链条达到平稳时的样本数，则MCMC方法的基木思路可概括为：
+
+**(1)**构造Markov链。构造一条Markov链，使其收敛到平稳分布 ；
+
+**(2)**产生样本：由 $\varnothing$ 中的某一点 $x^{(0)}$ 出发，用(1)中的Markov链进行抽样模拟，产生点序列：
+$x^{(1)}, \ldots, x^{(n)}$ ；
+
+**(3)**蒙特卡洛积分：任一函数f(x)的期望估计为：
+$$E[f(t)]=\frac{1}{n-m} \sum_{t=m+1}^{n}f\left(x^{(t)}\right)$$
+  
+---
+本文使用了香港SARS数据作为先验分布，方差设置较大，满足不确定性。具体的先验分布如下：
+
+```{r,echo=FALSE}
+knitr::include_graphics("image/先验分布.png")
+```
+
+过程如下：
+
+```{r,echo=FALSE}
+knitr::include_graphics("image/MCMC过程.png")
+```
+
+---
+class:middle, center
+## 4.2 eSIR包的准备和使用
+---
+####1.从github下载安装eSIR软件包
+  下载之前需要安装R软件包devtools,此外还依赖 rjags, scales, ggplot2, chron, gtools, data.table,
+stats。如果电脑未安装**JAGS**，Windows用户点击<http://www.sourceforge.net/projects/mcmc-jags/files>
+  下载安装后再安装eSIR
+  
+```{r,eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("lilywang1988/eSIR")
+library(eSIR) 
+```
+
+注：如果安装不成功可以在 <https://github.com/lilywang1988/eSIR> clone，然后手动安装。(install_binary文件夹中)
+
+####2.运行代码    
+包括修正疾病传播率的SIR模型和划分了隔离区的SIR模型。代码在宋README.rmd中，关于eSIR的一些参数设置，见eSIR.pdf。
+---
+class:middle, center
+## 4.3 前期准备
+---
+  
+1.**数据**：来自狗熊会
+
+
+北京市1月30-3月26的累计确诊，累计治愈和累计死亡，以及removed(累计治愈+累计死亡)    
+
+2.**政策**：来自北京市人民政府<http://www.beijing.gov.cn/ywdt/zwzt/yqfk/>
+  
+
+**·**1月23日，北京市取消包括庙会在内的大型活动
+
+**·**1月24日，北京启动一级响应机制
+
+**·**1月26日，暂停进出北京的长途客运班线和旅游包车
+
+**·**1月28日，北京铁路局部分旅客列车临时停运
+
+**·**1月30日，地铁和北京西站实行测温
+
+**·**2月3日，对外地返京人员复工政策
+
+---
+####北京市确诊人数时序图：
+ 
+
+```{r,eval=FALSE}
+h <- read.table(file="Beijingdata.csv",sep = ",",header = T)
+library(zoo)
+library(xts)
+qz <- xts(h$confirmed,as.Date(h$date, format='%m/%d'))
+win.graph(width = 9.5,height = 5.5,pointsize = 15)
+p<-plot(qz,type='l',main='北京市确诊人数时序图')
+p
+```
+---
+
+```{r,echo=FALSE}
+knitr::include_graphics("image/确诊.png")
+```
+
+---
+####北京市确诊人数和治愈人数时序图：
+
+```{r,eval=FALSE}
+h <- read.table(file="Beijingdata.csv",sep = ",",header = T)
+library(zoo)
+library(xts)
+options(warn=-1)
+qz<-xts(h$confirmed, as.Date(h$date, format='%m/%d'))
+cy<-xts(h$cure, as.Date(h$date, format='%m/%d'))
+win.graph(width = 9.5,height = 5.5,pointsize = 15)
+plot(qz,type='l',main ='',col="blue")
+lines(cy,type='l',main ='',col="red")
+```
+  
+---
+
+```{r,echo=FALSE}
+knitr::include_graphics("image/确诊和治愈.png")
+```
+
+---
 class: inverse, middle, center
 
 ## 5. R Markdown 文件格式
@@ -327,7 +467,7 @@ abstract: |
 pdf.options(family="GBI")
 ```
 ```{r,echo=FALSE}
-knitr::include_graphics("wbx1.png")
+knitr::include_graphics("image/wbx1.png")
 ```
 
 ### 模版使用
